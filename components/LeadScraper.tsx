@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { useLeads } from '@/lib/store';
+import { useSettings } from '@/lib/settings';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Search, Loader2, Download, Plus } from 'lucide-react';
@@ -13,6 +14,7 @@ export default function LeadScraper() {
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<any[]>([]);
   const { addLeads } = useLeads();
+  const { getGeminiKey } = useSettings();
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +24,14 @@ export default function LeadScraper() {
     setResults([]);
 
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+      const apiKey = getGeminiKey();
+      if (!apiKey) {
+        alert('Gemini API Key is missing. Please add it in Settings.');
+        setIsLoading(false);
+        return;
+      }
+      
+      const ai = new GoogleGenAI({ apiKey });
       
       const systemInstruction = `
         You are an expert lead generation assistant. The user will give you a query to find businesses.
@@ -124,7 +133,7 @@ export default function LeadScraper() {
       <div className="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Lead Scraper</h2>
         <p className="text-slate-500 mb-6">
-          Describe the businesses you want to find. Example: "Luxury restaurants in Riyadh with rating under 4 stars"
+          Describe the businesses you want to find. Example: &quot;Luxury restaurants in Riyadh with rating under 4 stars&quot;
         </p>
 
         <form onSubmit={handleSearch} className="flex gap-4">

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { Lead } from '@/types';
 import { useLeads } from '@/lib/store';
+import { useSettings } from '@/lib/settings';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { X, Building2, MapPin, Phone, Globe, Star, Mail, Loader2, User, Send } from 'lucide-react';
@@ -15,6 +16,7 @@ interface LeadDetailsModalProps {
 
 export default function LeadDetailsModal({ lead, onClose }: LeadDetailsModalProps) {
   const { updateLead } = useLeads();
+  const { getGeminiKey } = useSettings();
   const [activeTab, setActiveTab] = useState<'details' | 'ai' | 'email'>('details');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isFindingDM, setIsFindingDM] = useState(false);
@@ -24,7 +26,13 @@ export default function LeadDetailsModal({ lead, onClose }: LeadDetailsModalProp
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+      const apiKey = getGeminiKey();
+      if (!apiKey) {
+        alert('Gemini API Key is missing. Please add it in Settings.');
+        setIsAnalyzing(false);
+        return;
+      }
+      const ai = new GoogleGenAI({ apiKey });
       const prompt = `
         Analyze the following business to identify potential pain points and a sales entry angle.
         Business Name: ${lead.name}
@@ -64,7 +72,13 @@ export default function LeadDetailsModal({ lead, onClose }: LeadDetailsModalProp
   const handleFindDecisionMaker = async () => {
     setIsFindingDM(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+      const apiKey = getGeminiKey();
+      if (!apiKey) {
+        alert('Gemini API Key is missing. Please add it in Settings.');
+        setIsFindingDM(false);
+        return;
+      }
+      const ai = new GoogleGenAI({ apiKey });
       const prompt = `
         Find the key decision makers (CEO, Founder, Marketing Director, etc.) for the following business.
         Business Name: ${lead.name}
@@ -110,7 +124,13 @@ export default function LeadDetailsModal({ lead, onClose }: LeadDetailsModalProp
   const handleGenerateEmail = async () => {
     setIsGeneratingEmail(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.NEXT_PUBLIC_GEMINI_API_KEY });
+      const apiKey = getGeminiKey();
+      if (!apiKey) {
+        alert('Gemini API Key is missing. Please add it in Settings.');
+        setIsGeneratingEmail(false);
+        return;
+      }
+      const ai = new GoogleGenAI({ apiKey });
       const prompt = `
         Write a highly personalized cold sales email for the following business.
         Business Name: ${lead.name}
@@ -258,7 +278,7 @@ export default function LeadDetailsModal({ lead, onClose }: LeadDetailsModalProp
                   </div>
                 ) : (
                   <div className="text-center py-8 text-slate-500 text-sm bg-slate-50 rounded-xl border border-slate-100 border-dashed">
-                    Click "Analyze Business" to generate AI insights.
+                    Click &quot;Analyze Business&quot; to generate AI insights.
                   </div>
                 )}
               </div>
@@ -296,7 +316,7 @@ export default function LeadDetailsModal({ lead, onClose }: LeadDetailsModalProp
                   </div>
                 ) : (
                   <div className="text-center py-8 text-slate-500 text-sm bg-slate-50 rounded-xl border border-slate-100 border-dashed">
-                    Click "Find Contacts" to search for key personnel.
+                    Click &quot;Find Contacts&quot; to search for key personnel.
                   </div>
                 )}
               </div>

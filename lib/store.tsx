@@ -23,7 +23,8 @@ export function LeadProvider({ children }: { children: React.ReactNode }) {
     const saved = localStorage.getItem('leadgenius_leads');
     if (saved) {
       try {
-        setLeads(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        setTimeout(() => setLeads(parsed), 0);
       } catch (e) {
         console.error('Failed to parse leads from local storage', e);
       }
