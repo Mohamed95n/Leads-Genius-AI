@@ -1,0 +1,5 @@
+{
+  "name": "LeadGenius AI",
+  "description": "AI-powered Google Maps lead scraper, scorer, and sales automation CRM.",
+  "requestFramePermissions": ["geolocation"]
+}
