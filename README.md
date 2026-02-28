@@ -5,7 +5,7 @@ LeadGenius AI is an AI-powered Google Maps lead scraper, scorer, and sales autom
 ## 🚀 Features
 
 ### 1️⃣ AI Lead Scraper
-- Find businesses using natural language prompts (e.g., "Luxury restaurants in Riyadh with rating under 4 stars").
+- Find businesses using natural language prompts (e.g., "Luxury restaurants in your city with rating under 4 stars").
 - Extracts business name, phone number, location, website, rating, and review count using Google Maps integration.
 - Export results to CSV or save them directly to the built-in CRM.
 
